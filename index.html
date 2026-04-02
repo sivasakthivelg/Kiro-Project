@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Women's Safety Reminder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff6eb4 0%, #c850c0 40%, #7b2ff7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* floating decorative blobs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    body::before {
+      width: 420px; height: 420px;
+      background: #fff;
+      top: -120px; left: -100px;
+    }
+    body::after {
+      width: 320px; height: 320px;
+      background: #ffe0f7;
+      bottom: -80px; right: -80px;
+    }
+
+    .card {
+      max-width: 460px;
+      width: 100%;
+      background: rgba(255,255,255,0.97);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(120,0,180,0.25), 0 4px 16px rgba(0,0,0,0.10);
+      padding: 2.4rem 2.2rem 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ribbon banner at top */
+    .ribbon {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 7px;
+      border-radius: 28px 28px 0 0;
+      background: linear-gradient(90deg, #ff6eb4, #c850c0, #7b2ff7, #ff6eb4);
+      background-size: 200%;
+      animation: shimmer 3s linear infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% }
+      100% { background-position: 200% }
+    }
+
+    header { text-align: center; margin-bottom: 1.6rem; }
+
+    .icon-wrap {
+      font-size: 3rem;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #c850c0, #7b2ff7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #ad1457;
+      margin-top: 0.35rem;
+      font-weight: 400;
+    }
+
+    /* progress bar */
+    .progress-wrap {
+      margin-bottom: 1.4rem;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: #9c27b0;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .progress-bar-bg {
+      height: 8px;
+      background: #f3e5f5;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #ff6eb4, #c850c0, #7b2ff7);
+      transition: width 0.4s ease;
+    }
+
+    /* checklist items */
+    .checklist { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.6rem; }
+
+    .checklist label {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      border: 2px solid #f3e5f5;
+      background: #fdf6ff;
+      cursor: pointer;
+      font-size: 0.97rem;
+      font-weight: 500;
+      color: #4a0072;
+      transition: all 0.22s ease;
+      user-select: none;
+    }
+    .checklist label:hover {
+      border-color: #ce93d8;
+      background: #f8e8ff;
+      transform: translateX(4px);
+    }
+    .checklist label.checked {
+      background: linear-gradient(90deg, #fce4ec, #f3e5f5);
+      border-color: #e91e8c;
+      color: #880e4f;
+      text-decoration: line-through;
+      text-decoration-color: #e91e8c;
+    }
+
+    /* hide native checkbox, use custom */
+    .checklist input[type="checkbox"] { display: none; }
+
+    .custom-check {
+      width: 24px; height: 24px;
+      border-radius: 8px;
+      border: 2.5px solid #ce93d8;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+    }
+    .checklist label.checked .custom-check {
+      background: linear-gradient(135deg, #e91e8c, #c850c0);
+      border-color: #e91e8c;
+      color: #fff;
+    }
+
+    .item-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    /* button */
+    #done-btn {
+      width: 100%;
+      padding: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      background: linear-gradient(90deg, #ff6eb4, #c850c0, #7b2ff7);
+      background-size: 200%;
+      background-position: left;
+      box-shadow: 0 6px 20px rgba(200,80,192,0.4);
+      transition: all 0.3s ease;
+      letter-spacing: 0.03em;
+    }
+    #done-btn:hover {
+      background-position: right;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(200,80,192,0.5);
+    }
+    #done-btn:active { transform: scale(0.97); }
+
+    footer {
+      text-align: center;
+      margin-top: 1.4rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #9c27b0;
+      letter-spacing: 0.02em;
+    }
+
+    /* toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: linear-gradient(135deg, #c850c0, #7b2ff7);
+      color: #fff;
+      padding: 0.85rem 1.8rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(120,0,180,0.35);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* reminder section */
+    .reminder-section {
+      margin-top: 1.4rem;
+      background: linear-gradient(135deg, #fdf2ff, #fce4ec);
+      border: 2px solid #f3b8e8;
+      border-radius: 18px;
+      padding: 1.1rem 1.2rem;
+    }
+    .reminder-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #7b1fa2;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .reminder-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    #reminder-time {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.55rem 0.8rem;
+      border: 2px solid #ce93d8;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      color: #4a0072;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #reminder-time:focus { border-color: #c850c0; }
+    #set-reminder-btn {
+      padding: 0.55rem 1.1rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: linear-gradient(90deg, #c850c0, #7b2ff7);
+      box-shadow: 0 4px 12px rgba(120,0,180,0.25);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    #set-reminder-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(120,0,180,0.35); }
+    #cancel-reminder-btn {
+      padding: 0.55rem 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #c850c0;
+      border: 2px solid #ce93d8;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #fff;
+      transition: all 0.2s ease;
+      display: none;
+    }
+    #cancel-reminder-btn:hover { background: #fce4ec; }
+    .reminder-status {
+      margin-top: 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #7b1fa2;
+      min-height: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .reminder-status.active { color: #2e7d32; }
+    .reminder-status.denied { color: #c62828; }
+
+    @media (max-width: 480px) {
+      .card { border-radius: 20px; padding: 1.8rem 1.2rem 1.4rem; }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="ribbon"></div>
+
+    <header>
+      <div class="icon-wrap">🌸</div>
+      <h1>Women's Safety Reminder</h1>
+      <p class="subtitle">Don't forget these before leaving home ❤️</p>
+    </header>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="progress-text">0 / 5</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <label id="lbl-0">
+        <input type="checkbox" />
+        <span class="custom-check" id="chk-0"></span>
+        <span class="item-icon">🔥</span>
+        Turn off LPG gas
+      </label>
+      <label id="lbl-1">
+        <input type="checkbox" />
+        <span class="custom-check" id="chk-1"></span>
+        <span class="item-icon">💧</span>
+        Switch off motor
+      </label>
+      <label id="lbl-2">
+        <input type="checkbox" />
+        <span class="custom-check" id="chk-2"></span>
+        <span class="item-icon">🔒</span>
+        Lock the door
+      </label>
+      <label id="lbl-3">
+        <input type="checkbox" />
+        <span class="custom-check" id="chk-3"></span>
+        <span class="item-icon">💡</span>
+        Turn off lights
+      </label>
+      <label id="lbl-4">
+        <input type="checkbox" />
+        <span class="custom-check" id="chk-4"></span>
+        <span class="item-icon">🌀</span>
+        Turn off fan
+      </label>
+    </div>
+
+    <button id="done-btn">✅ Done for Today</button>
+
+    <!-- Reminder Section -->
+    <div class="reminder-section">
+      <div class="reminder-title">⏰ Set Daily Reminder</div>
+      <div class="reminder-row">
+        <input type="time" id="reminder-time" />
+        <button id="set-reminder-btn">🔔 Set Reminder</button>
+        <button id="cancel-reminder-btn">✕ Cancel</button>
+      </div>
+      <div class="reminder-status" id="reminder-status"></div>
+    </div>
+
+    <footer>Happy Women's Day 💐</footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const labels = document.querySelectorAll('.checklist label');
+    const fill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    function updateProgress() {
+      const checked = document.querySelectorAll('.checklist input:checked').length;
+      const pct = (checked / 5) * 100;
+      fill.style.width = pct + '%';
+      progressText.textContent = checked + ' / 5';
+    }
+
+    labels.forEach((label, i) => {
+      const input = label.querySelector('input');
+      const box = document.getElementById('chk-' + i);
+
+      label.addEventListener('click', () => {
+        // toggle happens natively after click; read state after
+        setTimeout(() => {
+          if (input.checked) {
+            label.classList.add('checked');
+            box.textContent = '✓';
+          } else {
+            label.classList.remove('checked');
+            box.textContent = '';
+          }
+          updateProgress();
+        }, 0);
+      });
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    document.getElementById('done-btn').addEventListener('click', function () {
+      const checked = document.querySelectorAll('.checklist input[type="checkbox"]:checked').length;
+      const missed = 5 - checked;
+
+      if (missed === 0) {
+        showToast('🎉 Great job! All tasks completed');
+      } else {
+        showToast('⚠️ You missed ' + missed + ' task' + (missed > 1 ? 's' : '') + '! Please check again');
+      }
+    });
+
+    // ── Reminder ──────────────────────────────────────────────
+    const statusEl = document.getElementById('reminder-status');
+    const cancelBtn = document.getElementById('cancel-reminder-btn');
+    let reminderInterval = null;
+    let reminderTime = null;
+
+    function saveReminder(time) {
+      localStorage.setItem('reminderTime', time);
+    }
+    function clearReminder() {
+      localStorage.removeItem('reminderTime');
+    }
+
+    function startReminderLoop(time) {
+      reminderTime = time;
+      if (reminderInterval) clearInterval(reminderInterval);
+
+      reminderInterval = setInterval(() => {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        if (hh + ':' + mm === reminderTime) {
+          fireReminder();
+        }
+      }, 10000); // check every 10 s
+    }
+
+    function fireReminder() {
+      if (Notification.permission === 'granted') {
+        new Notification("🌸 Women's Safety Reminder", {
+          body: "Time to check your safety list before leaving home! ❤️",
+          icon: "https://cdn.jsdelivr.net/npm/twemoji@14/assets/72x72/1f338.png"
+        });
+      }
+      showToast("⏰ Reminder: Check your safety list!");
+    }
+
+    function setReminderUI(time) {
+      statusEl.textContent = '✅ Reminder set for ' + formatTime(time) + ' every day';
+      statusEl.className = 'reminder-status active';
+      cancelBtn.style.display = 'inline-block';
+    }
+
+    function formatTime(t) {
+      const [h, m] = t.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return h12 + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    }
+
+    document.getElementById('set-reminder-btn').addEventListener('click', async () => {
+      const timeVal = document.getElementById('reminder-time').value;
+      if (!timeVal) {
+        statusEl.textContent = '⚠️ Please pick a time first';
+        statusEl.className = 'reminder-status denied';
+        return;
+      }
+
+      if (!('Notification' in window)) {
+        statusEl.textContent = '❌ Notifications not supported in this browser';
+        statusEl.className = 'reminder-status denied';
+        return;
+      }
+
+      let perm = Notification.permission;
+      if (perm === 'default') {
+        perm = await Notification.requestPermission();
+      }
+
+      if (perm === 'denied') {
+        statusEl.textContent = '🚫 Notification permission denied. Please allow it in browser settings.';
+        statusEl.className = 'reminder-status denied';
+        return;
+      }
+
+      saveReminder(timeVal);
+      startReminderLoop(timeVal);
+      setReminderUI(timeVal);
+      showToast('🔔 Reminder set for ' + formatTime(timeVal));
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      clearInterval(reminderInterval);
+      reminderInterval = null;
+      reminderTime = null;
+      clearReminder();
+      statusEl.textContent = '🔕 Reminder cancelled';
+      statusEl.className = 'reminder-status';
+      cancelBtn.style.display = 'none';
+      document.getElementById('reminder-time').value = '';
+    });
+
+    // restore saved reminder on page load
+    const saved = localStorage.getItem('reminderTime');
+    if (saved) {
+      document.getElementById('reminder-time').value = saved;
+      startReminderLoop(saved);
+      setReminderUI(saved);
+    }
+  </script>
+</body>
+</html>
